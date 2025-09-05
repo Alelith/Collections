@@ -1,0 +1,19 @@
+{
+	"files.associations": {
+		"iostream": "cpp",
+		"array": "cpp",
+		"deque": "cpp",
+		"string": "cpp",
+		"unordered_map": "cpp",
+		"vector": "cpp",
+		"string_view": "cpp",
+		"initializer_list": "cpp"
+	},
+	"makefile.launchConfigurations": [
+		{
+			"cwd": "/home/lilith/42/collections-prac",
+			"binaryPath": "/home/lilith/42/collections-prac/test_linked_list",
+			"binaryArgs": []
+		}
+	]
+}

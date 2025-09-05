@@ -2,13 +2,14 @@
 #include <iostream>
 
 template<class T>
-class LinkedList {
+class DoubleLinkedList {
 public:
 	struct Node {
 		T			data;
 		Node		*next;
+		Node		*prev;
 
-		Node(const T &value) : data(value), next(nullptr) {}
+		Node(const T &value) : data(value), next(nullptr), prev(nullptr) {}
 	};
 
 	using value_type		= T;
@@ -20,14 +21,14 @@ public:
 	using iterator			= Node*;
 	using const_iterator	= const Node*;
 
-	LinkedList() noexcept : head_(nullptr), tail_(nullptr), size_(0) {}
+	DoubleLinkedList() noexcept : head_(nullptr), tail_(nullptr), size_(0) {}
 
-	LinkedList(size_type count, const T &value) : head_(nullptr), tail_(nullptr), size_(0) {
+	DoubleLinkedList(size_type count, const T &value) : head_(nullptr), tail_(nullptr), size_(0) {
 		for (size_type i = 0; i < count; i++)
 			push_back(value);
 	}
 
-	LinkedList(const LinkedList &other) : head_(nullptr), tail_(nullptr), size_(0) {
+	DoubleLinkedList(const DoubleLinkedList &other) : head_(nullptr), tail_(nullptr), size_(0) {
 		pointer cur = other.head_;
 		while (cur) {
 			push_back(cur->data);
@@ -35,23 +36,31 @@ public:
 		}
 	}
 
-	LinkedList(LinkedList &&other) noexcept : head_(other.head_), tail_(other.tail_), size_(other.size_) {
+	DoubleLinkedList(DoubleLinkedList &&other) noexcept : head_(other.head_), tail_(other.tail_), size_(other.size_) {
 		other.head_ = nullptr;
 		other.size_ = 0;
 	}
 
-	~LinkedList() {
+	~DoubleLinkedList() {
 		clear();
 	}
 
 	reference operator[](size_type index) {
-		pointer cur = head_;
-		for (size_type i = 0; i < index; i++)
-			cur = cur->next;
+		pointer cur;
+		if (index <= size_ / 2) {
+			cur = head_;
+			for (size_type i = 0; i < index; i++)
+				cur = cur->next;
+		}
+		else {
+			cur = tail_;
+			for (size_type i = size_ - 1; i > index; i--)
+				cur = cur->prev;
+		}
 		return cur->data;
 	}
 
-	LinkedList &operator=(const LinkedList &other) {
+	DoubleLinkedList &operator=(const DoubleLinkedList &other) {
 		if (this != &other) {
 			clear();
 			pointer cur = other.head_;
@@ -63,7 +72,7 @@ public:
 		return *this;
 	}
 
-	LinkedList &operator=(LinkedList &&other) {
+	DoubleLinkedList &operator=(DoubleLinkedList &&other) {
 		if (this != &other) {
 			clear();
 			head_ = other.head_;
@@ -84,6 +93,7 @@ public:
 		}
 		else {
 			tail_->next = new_node;
+			new_node->prev = tail_;
 			tail_ = new_node;
 		}
 		size_++;
@@ -94,18 +104,13 @@ public:
 		if (head_ == tail_) {
 			delete tail_;
 			head_ = tail_ = nullptr;
-			size_ = 0;
-			return;
 		}
-		pointer cur = head_;
-		while (cur) {
-			if (cur->next == tail_) {
-				delete tail_;
-				tail_ = cur;
-				break;
-			}
+		else {
+			pointer prev = tail_->prev;
+			delete tail_;
+			tail_ = prev;
+			tail_->next = nullptr;
 		}
-		tail_->next = nullptr;
 		size_--;
 	}
 
@@ -124,9 +129,17 @@ public:
 	const_reference at(size_type index) const {
 		if (index >= size_)
 			throw std::out_of_range("Index out of range");
-		pointer cur = head_;
-		for (size_type i = 0; i < index; i++)
-			cur = cur->next;
+		pointer cur;
+		if (index <= size_ / 2) {
+			cur = head_;
+			for (size_type i = 0; i < index; i++)
+				cur = cur->next;
+		}
+		else {
+			cur = tail_;
+			for (size_type i = size_; i > index; i--)
+				cur = cur->prev;
+		}
 		return cur->data;
 	}
 

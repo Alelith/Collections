@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 template<class T>
 class Vector {
@@ -16,16 +17,14 @@ public:
 
 	Vector(size_type count, const T &value) : size_(count), capacity_(count) {
 		data_ = new T[capacity_];
-		for (size_type i = 0; i < size_; ++i) {
+		for (size_type i = 0; i < size_; ++i)
 			data_[i] = value;
-		}
 	}
 
 	Vector(const Vector &other) : size_(other.size_), capacity_(other.capacity_) {
 		data_ = new T[capacity_];
-		for (size_type i = 0; i < size_; ++i) {
+		for (size_type i = 0; i < size_; ++i)
 			data_[i] = other.data_[i];
-		}
 	}
 
 	Vector(Vector &&other) noexcept : data_(other.data_), size_(other.size_), capacity_(other.capacity_) {
@@ -48,9 +47,8 @@ public:
 			size_ = other.size_;
 			capacity_ = other.capacity_;
 			data_ = new T[capacity_];
-			for (size_type i = 0; i < size_; ++i) {
+			for (size_type i = 0; i < size_; ++i)
 				data_[i] = other.data_[i];
-			}
 		}
 		return *this;
 	}
@@ -68,34 +66,25 @@ public:
 		return *this;
 	}
 
-	size_type size() const noexcept { return size_; }
-	size_type capacity() const noexcept { return capacity_; }
-	bool empty() const noexcept { return size_ == 0; }
-	pointer data() noexcept { return data_; }
-	const_pointer data() const noexcept { return data_; }
-
 	void push_back(const_reference value) {
-		if (size_ == capacity_) {
+		if (size_ == capacity_)
 			reserve(capacity_ == 0 ? 1 : capacity_ * 2);
-		}
 		data_[size_++] = value;
 	}
 
 	void pop_back() {
 		if (!empty()) {
 			--size_;
-			if (size_ <= capacity_ / 2) {
+			if (size_ <= capacity_ / 2)
 				shrink_to_fit();
-			}
 		}
 	}
 
 	void reserve(size_type new_cap) {
 		if (new_cap > capacity_) {
 			pointer new_data = new T[new_cap];
-			for (size_type i = 0; i < size_; ++i) {
+			for (size_type i = 0; i < size_; ++i)
 				new_data[i] = std::move(data_[i]);
-			}
 			delete[] data_;
 			data_ = new_data;
 			capacity_ = new_cap;
@@ -104,33 +93,39 @@ public:
 
 	void clear() noexcept {
 		size_ = 0;
-		reserve(0);
-	}
-
-	void swap(Vector &other) noexcept {
-		std::swap(data_, other.data_);
-		std::swap(size_, other.size_);
-		std::swap(capacity_, other.capacity_);
+		shrink_to_fit();
 	}
 
 	const_reference at(size_type index) const {
-		if (index >= size_) {
+		if (index >= size_)
 			throw std::out_of_range("Index out of range");
-		}
 		return data_[index];
 	}
 
 	void shrink_to_fit() {
-		if (size_ <= capacity_) {
-			pointer new_data = new T[size_];
-			for (size_type i = 0; i < size_; ++i) {
-				new_data[i] = std::move(data_[i]);
+		if (size_ > 0) {
+			if (size_ <= capacity_) {
+				pointer new_data = new T[size_];
+				for (size_type i = 0; i < size_; ++i)
+					new_data[i] = std::move(data_[i]);
+				delete[] data_;
+				data_ = new_data;
+				capacity_ = size_;
 			}
+		}
+		else
+		{
 			delete[] data_;
-			data_ = new_data;
+			data_ = nullptr;
 			capacity_ = size_;
 		}
 	}
+
+	size_type size() const noexcept { return size_; }
+	size_type capacity() const noexcept { return capacity_; }
+	bool empty() const noexcept { return size_ == 0; }
+	pointer data() noexcept { return data_; }
+	const_pointer data() const noexcept { return data_; }
 
 	iterator begin() noexcept { return data_; }
 	const_iterator begin() const noexcept { return data_; }

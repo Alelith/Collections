@@ -2,7 +2,7 @@
 #include <iostream>
 
 template<class T>
-class Vector {
+class Stack {
 public:
 	using value_type		= T;
 	using size_type			= unsigned long;
@@ -13,27 +13,27 @@ public:
 	using iterator			= T*;
 	using const_iterator	= const T*;
 
-	Vector() noexcept : data_(nullptr), size_(0), capacity_(0) {}
+	Stack() noexcept : data_(nullptr), size_(0), capacity_(0) {}
 
-	Vector(size_type count, const T &value) : size_(count), capacity_(count) {
+	Stack(size_type count, const T &value) : size_(count), capacity_(count) {
 		data_ = new T[capacity_];
 		for (size_type i = 0; i < size_; ++i)
 			data_[i] = value;
 	}
 
-	Vector(const Vector &other) : size_(other.size_), capacity_(other.capacity_) {
+	Stack(const Stack &other) : size_(other.size_), capacity_(other.capacity_) {
 		data_ = new T[capacity_];
 		for (size_type i = 0; i < size_; ++i)
 			data_[i] = other.data_[i];
 	}
 
-	Vector(Vector &&other) noexcept : data_(other.data_), size_(other.size_), capacity_(other.capacity_) {
+	Stack(Stack &&other) noexcept : data_(other.data_), size_(other.size_), capacity_(other.capacity_) {
 		other.data_ = nullptr;
 		other.size_ = 0;
 		other.capacity_ = 0;
 	}
 
-	~Vector() {
+	~Stack() {
 		delete[] data_;
 	}
 
@@ -41,7 +41,7 @@ public:
 		return data_[index];
 	}
 
-	Vector &operator=(const Vector &other) {
+	Stack &operator=(const Stack &other) {
 		if (this != &other) {
 			delete[] data_;
 			size_ = other.size_;
@@ -53,7 +53,7 @@ public:
 		return *this;
 	}
 
-	Vector &operator=(Vector &&other) noexcept {
+	Stack &operator=(Stack &&other) noexcept {
 		if (this != &other) {
 			delete[] data_;
 			data_ = other.data_;
@@ -107,32 +107,19 @@ public:
 		return data_[index];
 	}
 
-	void add(const_reference value) {
+	void push(const_reference value) {
 		if (size_ == capacity_)
 			reserve(capacity_ == 0 ? 1 : capacity_ * 2);
 		data_[size_] = value;
 		size_++;
 	}
 
-	pointer insert(size_type index, const_reference value) {
-		if (index > size_) throw std::out_of_range("insert index out of range");
-		if (size_ == capacity_)
-			reserve(capacity_ == 0 ? 1 : capacity_ * 2);
-		for (size_type i = size_; i > index; --i)
-			data_[i] = data_[i - 1];
-		data_[index] = value;
-		++size_;
-		return data_ + index;
-	}
-
-	value_type erase(size_type index) {
-		if (index >= size_) throw std::out_of_range("erase index out of range");
-		value_type val = data_[index];
-		for (size_type i = index; i < size_ - 1; ++i)
-			data_[i] = data_[i + 1];
+	value_type pop() {
+		if (size_ == 0) throw std::out_of_range("Empty stack");
+		value_type value = data_[size_ - 1];
 		--size_;
 		shrink_to_fit();
-		return val;
+		return value;
 	}
 
 	size_type size() const noexcept { return size_; }

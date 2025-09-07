@@ -85,35 +85,6 @@ public:
 		return *this;
 	}
 
-	void push_back(const_reference value) {
-		pointer new_node = new Node(value);
-		if (!tail_ && !head_) {
-			tail_ = new_node;
-			head_ = new_node;
-		}
-		else {
-			tail_->next = new_node;
-			new_node->prev = tail_;
-			tail_ = new_node;
-		}
-		size_++;
-	}
-
-	void pop_back() {
-		if (!tail_) return;
-		if (head_ == tail_) {
-			delete tail_;
-			head_ = tail_ = nullptr;
-		}
-		else {
-			pointer prev = tail_->prev;
-			delete tail_;
-			tail_ = prev;
-			tail_->next = nullptr;
-		}
-		size_--;
-	}
-
 	void clear() noexcept {
 		pointer cur = head_;
 		while (cur) {
@@ -141,6 +112,74 @@ public:
 				cur = cur->prev;
 		}
 		return cur->data;
+	}
+
+	void add(const_reference value) {
+		pointer new_node = new Node(value);
+		if (!tail_ && !head_) {
+			tail_ = new_node;
+			head_ = new_node;
+		}
+		else {
+			tail_->next = new_node;
+			new_node->prev = tail_;
+			tail_ = new_node;
+		}
+		size_++;
+	}
+
+	pointer insert(size_type index, const_reference value) {
+		if (index > size_) throw std::out_of_range("insert index out of range");
+		pointer new_node = new Node(value);
+		if (index == 0) {
+			new_node->next = head_;
+			if (head_) head_->prev = new_node;
+			head_ = new_node;
+			if (size_ == 0) tail_ = new_node;
+		}
+		else if (index == size_) {
+			new_node->prev = tail_;
+			if (tail_) tail_->next = new_node;
+			tail_ = new_node;
+			if (size_ == 0) head_ = new_node;
+		}
+		else {
+			pointer cur = head_;
+			for (size_type i = 0; i < index - 1; ++i) cur = cur->next;
+			new_node->next = cur->next;
+			new_node->prev = cur;
+			cur->next->prev = new_node;
+			cur->next = new_node;
+		}
+		size_++;
+		return new_node;
+	}
+
+	value_type erase(size_type index) {
+		if (index >= size_ || head_ == nullptr) throw std::out_of_range("erase index out of range");
+		value_type val;
+		if (index == 0) {
+			pointer to_delete = head_;
+			val = to_delete->data;
+			head_ = head_->next;
+			if (head_) head_->prev = nullptr;
+			if (tail_ == to_delete) tail_ = nullptr;
+			delete to_delete;
+			size_--;
+			return val;
+		}
+		pointer cur = head_;
+		for (size_type i = 0; i < index - 1; ++i) cur = cur->next;
+		pointer to_delete = cur->next;
+		val = to_delete->data;
+		cur->next = to_delete->next;
+		if (to_delete->next) 
+			to_delete->next->prev = cur;
+		if (tail_ == to_delete)
+			tail_ = cur;
+		delete to_delete;
+		size_--;
+		return val;
 	}
 
 	size_type size() const noexcept { return size_; }

@@ -2,13 +2,14 @@
 #include <iostream>
 
 template<class T>
-class LinkedList {
+class Queue {
 public:
 	struct Node {
 		T			data;
 		Node		*next;
+		Node		*prev;
 
-		Node(const T &value) : data(value), next(nullptr) {}
+		Node(const T &value) : data(value), next(nullptr), prev(nullptr) {}
 	};
 
 	using value_type		= T;
@@ -20,14 +21,14 @@ public:
 	using iterator			= Node*;
 	using const_iterator	= const Node*;
 
-	LinkedList() noexcept : head_(nullptr), tail_(nullptr), size_(0) {}
+	Queue() noexcept : head_(nullptr), tail_(nullptr), size_(0) {}
 
-	LinkedList(size_type count, const T &value) : head_(nullptr), tail_(nullptr), size_(0) {
+	Queue(size_type count, const T &value) : head_(nullptr), tail_(nullptr), size_(0) {
 		for (size_type i = 0; i < count; i++)
 			push_back(value);
 	}
 
-	LinkedList(const LinkedList &other) : head_(nullptr), tail_(nullptr), size_(0) {
+	Queue(const Queue &other) : head_(nullptr), tail_(nullptr), size_(0) {
 		pointer cur = other.head_;
 		while (cur) {
 			push_back(cur->data);
@@ -35,23 +36,31 @@ public:
 		}
 	}
 
-	LinkedList(LinkedList &&other) noexcept : head_(other.head_), tail_(other.tail_), size_(other.size_) {
+	Queue(Queue &&other) noexcept : head_(other.head_), tail_(other.tail_), size_(other.size_) {
 		other.head_ = nullptr;
 		other.size_ = 0;
 	}
 
-	~LinkedList() {
+	~Queue() {
 		clear();
 	}
 
 	reference operator[](size_type index) {
-		pointer cur = head_;
-		for (size_type i = 0; i < index; i++)
-			cur = cur->next;
+		pointer cur;
+		if (index <= size_ / 2) {
+			cur = head_;
+			for (size_type i = 0; i < index; i++)
+				cur = cur->next;
+		}
+		else {
+			cur = tail_;
+			for (size_type i = size_ - 1; i > index; i--)
+				cur = cur->prev;
+		}
 		return cur->data;
 	}
 
-	LinkedList &operator=(const LinkedList &other) {
+	Queue &operator=(const Queue &other) {
 		if (this != &other) {
 			clear();
 			pointer cur = other.head_;
@@ -63,7 +72,7 @@ public:
 		return *this;
 	}
 
-	LinkedList &operator=(LinkedList &&other) {
+	Queue &operator=(Queue &&other) {
 		if (this != &other) {
 			clear();
 			head_ = other.head_;
@@ -91,13 +100,21 @@ public:
 	const_reference at(size_type index) const {
 		if (index >= size_)
 			throw std::out_of_range("Index out of range");
-		pointer cur = head_;
-		for (size_type i = 0; i < index; i++)
-			cur = cur->next;
+		pointer cur;
+		if (index <= size_ / 2) {
+			cur = head_;
+			for (size_type i = 0; i < index; i++)
+				cur = cur->next;
+		}
+		else {
+			cur = tail_;
+			for (size_type i = size_; i > index; i--)
+				cur = cur->prev;
+		}
 		return cur->data;
 	}
 
-	void add(const_reference value) {
+	void enqueue(const_reference value) {
 		pointer new_node = new Node(value);
 		if (!tail_ && !head_) {
 			tail_ = new_node;
@@ -105,52 +122,24 @@ public:
 		}
 		else {
 			tail_->next = new_node;
+			new_node->prev = tail_;
 			tail_ = new_node;
 		}
 		size_++;
 	}
 
-	pointer insert(size_type index, const_reference value) {
-		if (index > size_) throw std::out_of_range("insert index out of range");
-		pointer new_node = new Node(value);
-		if (index == 0) { // Insert at head
-			new_node->next = head_;
-			head_ = new_node;
-			if (size_ == 0) tail_ = new_node;
+	value_type dequeue() {
+		if (head_ == nullptr) throw std::out_of_range("erase index out of range");
+		value_type value = tail_->data;
+		if (head_ == tail_) {
+			delete head_;
+			head_ = nullptr;
 		}
-		else {
-			pointer cur = head_;
-			for (size_type i = 0; i < index - 1; ++i) cur = cur->next;
-			new_node->next = cur->next;
-			cur->next = new_node;
-			if (new_node->next == nullptr) tail_ = new_node;
-		}
-		size_++;
-		return new_node;
-	}
-
-	value_type erase(size_type index) {
-		if (index >= size_ || head_ == nullptr) throw std::out_of_range("erase index out of range");
-		value_type val;
-		if (index == 0) {
-			pointer to_delete = head_;
-			val = to_delete->data;
-			head_ = head_->next;
-			if (tail_ == to_delete) tail_ = nullptr;
-			delete to_delete;
-			size_--;
-			return val;
-		}
-		pointer cur = head_;
-		for (size_type i = 0; i < index - 1; ++i) cur = cur->next;
-		pointer to_delete = cur->next;
-		val = to_delete->data;
-		cur->next = to_delete->next;
-		if (tail_ == to_delete)
-			tail_ = cur;
-		delete to_delete;
-		size_--;
-		return val;
+		pointer previous = tail_->prev;
+		delete tail_;
+		tail_ = previous;
+		--size_;
+		return value;
 	}
 
 	size_type size() const noexcept { return size_; }

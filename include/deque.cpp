@@ -40,7 +40,9 @@ public:
 	}
 
 	reference operator[](size_type index) {
-		return data_[(index + head_) % capacity_];
+		if (head_ + index >= size_)
+			throw std::out_of_range("Index out of range");
+		return data_[(head_ + index) % capacity_];
 	}
 
 	Deque &operator=(const Deque &other) {
@@ -68,8 +70,69 @@ public:
 		return *this;
 	}
 
+	void clear() noexcept {
+		size_ = 0;
+		shrink_to_fit();
+	}
+
+	const_reference at(size_type index) const {
+		if (head_ + index >= size_)
+			throw std::out_of_range("Index out of range");
+		return data_[head_ + index % capacity_];
+	}
+
+	void push_back(const_reference value) {
+		if (size_ == capacity_)
+			reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+		data_[tail_] = value;
+		tail_ = (tail_ + 1) % capacity_;
+		size_++;
+	}
+
+	void push_front(const_reference value) {
+		if (size_ == capacity_)
+			reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+		head_ = head_ == 0 ? capacity_ - 1 : head_ - 1;
+		data_[head_] = value;
+		size_++;
+	}
+
+	value_type pop_back() {
+		if (size_ == 0) throw std::out_of_range("Empty deque");
+		tail_ = tail_ == 0 ? capacity_ - 1 : tail_ - 1;
+		value_type value = data_[tail_];
+		size_--;
+		shrink_to_fit();
+		return value;
+	}
+
+	value_type pop_front() {
+		if (size_ == 0) throw std::out_of_range("Empty deque");
+		value_type value = data_[head_];
+		head_ = head_ == 0 ? capacity_ - 1 : head_ - 1;
+		size_--;
+		shrink_to_fit();
+		return value;
+	}
+
+	size_type size() const noexcept { return size_; }
+	size_type capacity() const noexcept { return capacity_; }
+	size_type head() const noexcept { return head_; }
+	size_type tail() const noexcept { return tail_; }
+	bool empty() const noexcept { return size_ == 0; }
+	pointer data() noexcept { return data_; }
+	const_pointer data() const noexcept { return data_; }
+
+private:
+	pointer		data_;
+	size_type	size_;
+	size_type	capacity_;
+	size_type	head_;
+	size_type	tail_;
+
 	void reserve(size_type new_cap) {
 		if (new_cap > capacity_) {
+			order();
 			pointer new_data = new T[new_cap];
 			for (size_type i = 0; i < size_; ++i)
 				new_data[i] = std::move(data_[i]);
@@ -81,15 +144,14 @@ public:
 
 	void shrink_to_fit() {
 		if (size_ > 0) {
-			if (size_ <= capacity_) {
-				pointer new_data = new T[size_];
+			if (size_ < capacity_ / 2) {
+				order();
+				pointer new_data = new T[capacity_ / 2];
 				for (size_type i = 0; i < size_; ++i)
 					new_data[i] = std::move(data_[i]);
 				delete[] data_;
 				data_ = new_data;
-				capacity_ = size_;
-				tail_ %= capacity_;
-				head_ %= capacity_;
+				capacity_ /= 2;
 			}
 		}
 		else
@@ -101,34 +163,14 @@ public:
 		}
 	}
 
-	void clear() noexcept {
-		size_ = 0;
-		shrink_to_fit();
+	void order() {
+		if (size_ == 0 || head_ == 0) return;
+		pointer new_data = new T[capacity_];
+		for (size_type i = 0; i < size_; ++i)
+			new_data[i] = data_[(head_ + i) % capacity_];
+		delete[] data_;
+		data_ = new_data;
+		head_ = 0;
+		tail_ = size_;
 	}
-
-	const_reference at(size_type index) const {
-		if (index >= size_)
-			throw std::out_of_range("Index out of range");
-		return data_[index];
-	}
-
-	size_type size() const noexcept { return size_; }
-	size_type capacity() const noexcept { return capacity_; }
-	size_type head() const noexcept { return head_; }
-	size_type tail() const noexcept { return tail_; }
-	bool empty() const noexcept { return size_ == 0; }
-	pointer data() noexcept { return data_; }
-	const_pointer data() const noexcept { return data_; }
-
-	/*iterator begin() noexcept { return data_; }
-	const_iterator begin() const noexcept { return data_; }
-	iterator end() noexcept { return data_ + size_; }
-	const_iterator end() const noexcept { return data_ + size_; }*/
-
-private:
-	pointer		data_;
-	size_type	size_;
-	size_type	capacity_;
-	size_type	head_;
-	size_type	tail_;
 };

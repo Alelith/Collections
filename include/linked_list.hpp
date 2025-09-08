@@ -45,6 +45,8 @@ public:
 	}
 
 	reference operator[](size_type index) {
+		if (index >= size_)
+			throw std::out_of_range("Index out of range");
 		pointer cur = head_;
 		for (size_type i = 0; i < index; i++)
 			cur = cur->next;

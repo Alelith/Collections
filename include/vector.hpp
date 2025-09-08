@@ -38,6 +38,8 @@ public:
 	}
 
 	reference operator[](size_type index) {
+		if (index >= size_)
+			throw std::out_of_range("Index out of range");
 		return data_[index];
 	}
 
@@ -64,36 +66,6 @@ public:
 			other.capacity_ = 0;
 		}
 		return *this;
-	}
-
-	void reserve(size_type new_cap) {
-		if (new_cap > capacity_) {
-			pointer new_data = new T[new_cap];
-			for (size_type i = 0; i < size_; ++i)
-				new_data[i] = std::move(data_[i]);
-			delete[] data_;
-			data_ = new_data;
-			capacity_ = new_cap;
-		}
-	}
-
-	void shrink_to_fit() {
-		if (size_ > 0) {
-			if (size_ <= capacity_) {
-				pointer new_data = new T[size_];
-				for (size_type i = 0; i < size_; ++i)
-					new_data[i] = std::move(data_[i]);
-				delete[] data_;
-				data_ = new_data;
-				capacity_ = size_;
-			}
-		}
-		else
-		{
-			delete[] data_;
-			data_ = nullptr;
-			capacity_ = size_;
-		}
 	}
 
 	void clear() noexcept {
@@ -150,4 +122,34 @@ private:
 	pointer		data_;
 	size_type	size_;
 	size_type	capacity_;
+
+	void reserve(size_type new_cap) {
+		if (new_cap > capacity_) {
+			pointer new_data = new T[new_cap];
+			for (size_type i = 0; i < size_; ++i)
+				new_data[i] = std::move(data_[i]);
+			delete[] data_;
+			data_ = new_data;
+			capacity_ = new_cap;
+		}
+	}
+
+	void shrink_to_fit() {
+		if (size_ > 0) {
+			if (size_ < capacity_ / 2) {
+				pointer new_data = new T[capacity_ / 2];
+				for (size_type i = 0; i < size_; ++i)
+					new_data[i] = std::move(data_[i]);
+				delete[] data_;
+				data_ = new_data;
+				capacity_ /= 2;
+			}
+		}
+		else
+		{
+			delete[] data_;
+			data_ = nullptr;
+			capacity_ = size_;
+		}
+	}
 };

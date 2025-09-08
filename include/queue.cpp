@@ -46,6 +46,8 @@ public:
 	}
 
 	reference operator[](size_type index) {
+		if (index >= size_)
+			throw std::out_of_range("Index out of range");
 		pointer cur;
 		if (index <= size_ / 2) {
 			cur = head_;
@@ -129,7 +131,7 @@ public:
 	}
 
 	value_type dequeue() {
-		if (head_ == nullptr) throw std::out_of_range("erase index out of range");
+		if (head_ == nullptr) throw std::out_of_range("Empty queue");
 		value_type value = tail_->data;
 		if (head_ == tail_) {
 			delete head_;

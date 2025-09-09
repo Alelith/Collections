@@ -13,7 +13,7 @@ public:
 	using iterator			= T*;
 	using const_iterator	= const T*;
 
-	Deque() noexcept : data_(nullptr), size_(0), capacity_(0) {}
+	Deque() noexcept : data_(nullptr), size_(0), capacity_(0), head_(0), tail_(0) {}
 
 	Deque(size_type count, const T &value) : size_(count), capacity_(count), head_(0), tail_(0) {
 		data_ = new T[capacity_];
@@ -40,7 +40,7 @@ public:
 	}
 
 	reference operator[](size_type index) {
-		if (head_ + index >= size_)
+		if (index >= size_)
 			throw std::out_of_range("Index out of range");
 		return data_[(head_ + index) % capacity_];
 	}
@@ -76,9 +76,9 @@ public:
 	}
 
 	const_reference at(size_type index) const {
-		if (head_ + index >= size_)
+		if (index >= size_)
 			throw std::out_of_range("Index out of range");
-		return data_[head_ + index % capacity_];
+		return data_[(head_ + index) % capacity_];
 	}
 
 	void push_back(const_reference value) {
@@ -99,19 +99,19 @@ public:
 
 	value_type pop_back() {
 		if (size_ == 0) throw std::out_of_range("Empty deque");
-		tail_ = tail_ == 0 ? capacity_ - 1 : tail_ - 1;
+		tail_ = (tail_ == 0) ? capacity_ - 1 : tail_ - 1;
 		value_type value = data_[tail_];
 		size_--;
-		shrink_to_fit();
+		// shrink_to_fit(); // No reducir automáticamente en cada pop
 		return value;
 	}
 
 	value_type pop_front() {
 		if (size_ == 0) throw std::out_of_range("Empty deque");
 		value_type value = data_[head_];
-		head_ = head_ == 0 ? capacity_ - 1 : head_ - 1;
+		head_ = (head_ + 1) % capacity_;
 		size_--;
-		shrink_to_fit();
+		// shrink_to_fit(); // No reducir automáticamente en cada pop
 		return value;
 	}
 

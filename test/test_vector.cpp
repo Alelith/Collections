@@ -7,11 +7,9 @@
 #define RED   "\033[31m"
 #define RESET "\033[0m"
 
-
 void print_result(const std::string& test, bool ok) {
     std::cout << test << ": " << (ok ? GREEN "OK" RESET : RED "KO" RESET) << std::endl;
 }
-
 
 void test_basic() {
     Vector<int> v;
@@ -43,7 +41,6 @@ void test_basic() {
     for (int i = 0; i < 100; ++i) v.erase(0);
     print_result("erase all elements", v.empty());
 }
-
 
 void test_strict() {
     Vector<int> v;
@@ -89,7 +86,6 @@ void test_strict() {
     for (auto it = v5.begin(); it != v5.end(); ++it) sum += *it;
     print_result("iterator range sums correctly", sum == v5[0] + v5[1]);
 }
-
 
 int main() {
     std::cout << "\n--- Basic Vector Test ---\n";

@@ -7,11 +7,9 @@
 #define RED   "\033[31m"
 #define RESET "\033[0m"
 
-
 void print_result(const std::string& test, bool ok) {
     std::cout << test << ": " << (ok ? GREEN "OK" RESET : RED "KO" RESET) << std::endl;
 }
-
 
 void test_basic() {
     Stack<int> s;
@@ -42,7 +40,6 @@ void test_basic() {
     print_result("pop all elements", s.empty());
 }
 
-
 void test_strict() {
     Stack<int> s;
     bool except = false;
@@ -67,7 +64,6 @@ void test_strict() {
     s5 = std::move(s4);
     print_result("move assignment moves values", s5.size() == s2.size() && s5[0] == s2[0]);
 }
-
 
 int main() {
     std::cout << "\n--- Basic Stack Test ---\n";

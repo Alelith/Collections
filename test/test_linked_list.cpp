@@ -7,11 +7,9 @@
 #define RED   "\033[31m"
 #define RESET "\033[0m"
 
-
 void print_result(const std::string& test, bool ok) {
     std::cout << test << ": " << (ok ? GREEN "OK" RESET : RED "KO" RESET) << std::endl;
 }
-
 
 void test_basic() {
     LinkedList<int> l;
@@ -44,7 +42,6 @@ void test_basic() {
     print_result("erase all elements", l.empty());
 }
 
-
 void test_strict() {
     LinkedList<int> l;
     bool except = false;
@@ -76,7 +73,6 @@ void test_strict() {
     l5 = std::move(l4);
     print_result("move assignment moves values", l5.size() == l2.size() && l5[0] == l2[0]);
 }
-
 
 int main() {
     std::cout << "\n--- Basic LinkedList Test ---\n";

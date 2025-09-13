@@ -82,16 +82,16 @@ public:
 	}
 
 	void push_back(const_reference value) {
-		if (size_ == capacity_)
-			reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+		if (size_ == capacity_ - 1 || capacity_ == 0)
+			reserve();
 		data_[tail_] = value;
 		tail_ = (tail_ + 1) % capacity_;
 		size_++;
 	}
 
 	void push_front(const_reference value) {
-		if (size_ == capacity_)
-			reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+		if (size_ == capacity_ - 1 || capacity_ == 0)
+			reserve();
 		head_ = head_ == 0 ? capacity_ - 1 : head_ - 1;
 		data_[head_] = value;
 		size_++;
@@ -99,12 +99,12 @@ public:
 
 	value_type pop_back() {
 		if (size_ == 0) throw std::out_of_range("Empty deque");
+		if (capacity_ > 0)
+			tail_ = (tail_ == 0) ? capacity_ - 1 : tail_ - 1;
 		value_type value = data_[tail_];
 		size_--;
 		if (size_ < capacity_ / 2)
 			shrink_to_fit();
-		if (capacity_ > 0)
-			tail_ = (tail_ == 0) ? capacity_ : tail_ - 1;
 		return value;
 	}
 
@@ -134,16 +134,14 @@ private:
 	size_type	head_;
 	size_type	tail_;
 
-	void reserve(size_type new_cap) {
-		if (new_cap > capacity_) {
-			order();
-			pointer new_data = new T[new_cap];
-			for (size_type i = 0; i < size_; ++i)
-				new_data[i] = std::move(data_[i]);
-			delete[] data_;
-			data_ = new_data;
-			capacity_ = new_cap;
-		}
+	void reserve() {
+		order();
+		pointer new_data = new T[capacity_ > 0 ? capacity_ * 2 : 1];
+		for (size_type i = 0; i < size_; ++i)
+			new_data[i] = std::move(data_[i]);
+		delete[] data_;
+		data_ = new_data;
+		capacity_ = capacity_ > 0 ? capacity_ * 2 : 1;
 	}
 
 	void shrink_to_fit() {
@@ -172,6 +170,7 @@ private:
 			new_data[i] = data_[(head_ + i) % capacity_];
 		delete[] data_;
 		data_ = new_data;
-		head_ = tail_ = 0;
+		head_ = 0;
+		tail_ = size_;
 	}
 };

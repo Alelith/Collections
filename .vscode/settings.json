@@ -1,0 +1,9 @@
+{
+	"makefile.launchConfigurations": [
+		{
+			"cwd": "/home/acesteve/42/collections/bin",
+			"binaryPath": "/home/acesteve/42/collections/bin/test_deque",
+			"binaryArgs": []
+		}
+	]
+}

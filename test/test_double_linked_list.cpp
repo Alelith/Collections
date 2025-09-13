@@ -7,11 +7,9 @@
 #define RED   "\033[31m"
 #define RESET "\033[0m"
 
-
 void print_result(const std::string& test, bool ok) {
     std::cout << test << ": " << (ok ? GREEN "OK" RESET : RED "KO" RESET) << std::endl;
 }
-
 
 void test_basic() {
     DoubleLinkedList<int> d;
@@ -44,7 +42,6 @@ void test_basic() {
     print_result("erase all elements", d.empty());
 }
 
-
 void test_strict() {
     DoubleLinkedList<int> d;
     bool except = false;
@@ -76,7 +73,6 @@ void test_strict() {
     d5 = std::move(d4);
     print_result("move assignment moves values", d5.size() == d2.size() && d5[0] == d2[0]);
 }
-
 
 int main() {
     std::cout << "\n--- Basic DoubleLinkedList Test ---\n";

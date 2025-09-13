@@ -7,11 +7,9 @@
 #define RED   "\033[31m"
 #define RESET "\033[0m"
 
-
 void print_result(const std::string& test, bool ok) {
     std::cout << test << ": " << (ok ? GREEN "OK" RESET : RED "KO" RESET) << std::endl;
 }
-
 
 void test_basic() {
     Queue<int> q;
@@ -41,7 +39,6 @@ void test_basic() {
     print_result("dequeue all elements", q.empty());
 }
 
-
 void test_strict() {
     Queue<int> q;
     bool except = false;
@@ -66,7 +63,6 @@ void test_strict() {
     q5 = std::move(q4);
     print_result("move assignment moves values", q5.size() == q2.size() && q5[0] == q2[0]);
 }
-
 
 int main() {
     std::cout << "\n--- Basic Queue Test ---\n";

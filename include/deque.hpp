@@ -99,19 +99,23 @@ public:
 
 	value_type pop_back() {
 		if (size_ == 0) throw std::out_of_range("Empty deque");
-		tail_ = (tail_ == 0) ? capacity_ - 1 : tail_ - 1;
 		value_type value = data_[tail_];
 		size_--;
-		// shrink_to_fit(); // No reducir automáticamente en cada pop
+		if (size_ < capacity_ / 2)
+			shrink_to_fit();
+		if (capacity_ > 0)
+			tail_ = (tail_ == 0) ? capacity_ : tail_ - 1;
 		return value;
 	}
 
 	value_type pop_front() {
 		if (size_ == 0) throw std::out_of_range("Empty deque");
 		value_type value = data_[head_];
-		head_ = (head_ + 1) % capacity_;
 		size_--;
-		// shrink_to_fit(); // No reducir automáticamente en cada pop
+		if (size_ < capacity_ / 2)
+			shrink_to_fit();
+		if (capacity_ > 0)
+			head_ = (head_ + 1) % capacity_;
 		return value;
 	}
 
@@ -144,15 +148,13 @@ private:
 
 	void shrink_to_fit() {
 		if (size_ > 0) {
-			if (size_ < capacity_ / 2) {
-				order();
-				pointer new_data = new T[capacity_ / 2];
-				for (size_type i = 0; i < size_; ++i)
-					new_data[i] = std::move(data_[i]);
-				delete[] data_;
-				data_ = new_data;
-				capacity_ /= 2;
-			}
+			order();
+			pointer new_data = new T[capacity_ / 2];
+			for (size_type i = 0; i < size_; ++i)
+				new_data[i] = std::move(data_[i]);
+			delete[] data_;
+			data_ = new_data;
+			capacity_ /= 2;
 		}
 		else
 		{
@@ -170,7 +172,6 @@ private:
 			new_data[i] = data_[(head_ + i) % capacity_];
 		delete[] data_;
 		data_ = new_data;
-		head_ = 0;
-		tail_ = size_;
+		head_ = tail_ = 0;
 	}
 };

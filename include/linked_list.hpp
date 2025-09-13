@@ -24,13 +24,13 @@ public:
 
 	LinkedList(size_type count, const T &value) : head_(nullptr), tail_(nullptr), size_(0) {
 		for (size_type i = 0; i < count; i++)
-			push_back(value);
+			add(value);
 	}
 
 	LinkedList(const LinkedList &other) : head_(nullptr), tail_(nullptr), size_(0) {
 		pointer cur = other.head_;
 		while (cur) {
-			push_back(cur->data);
+			add(cur->data);
 			cur = cur->next;
 		}
 	}
@@ -58,7 +58,7 @@ public:
 			clear();
 			pointer cur = other.head_;
 			while (cur) {
-				push_back(cur->data);
+				add(cur->data);
 				cur = cur->next;
 			}
 		}

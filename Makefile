@@ -1,38 +1,77 @@
-# Makefile
-
-# Variables
 CXX = g++
-CXXFLAGS = -g -Wall -Wextra -std=c++11 -Iinclude
-BIN = bin
+CXXFLAGS = -std=c++17 -Wall -Wextra -I./include
+TEST_DIR = test
+BUILD_DIR = build
 
-# Lista de tests
-TESTS = test_vector test_linked_list test_double_linked_list test_stack test_queue test_deque
+# Colors
+GREEN = \033[0;32m
+BLUE = \033[0;34m
+CYAN = \033[0;36m
+YELLOW = \033[1;33m
+RED = \033[0;31m
+BOLD = \033[1m
+RESET = \033[0m
 
-# Targets
-all: $(BIN) $(addprefix $(BIN)/, $(TESTS))
+# Test files explicitly listed
+TEST_SOURCES = $(TEST_DIR)/test_vector.cpp \
+               $(TEST_DIR)/test_linked_list.cpp \
+               $(TEST_DIR)/test_double_linked_list.cpp \
+               $(TEST_DIR)/test_stack.cpp \
+               $(TEST_DIR)/test_queue.cpp \
+               $(TEST_DIR)/test_deque.cpp
 
-$(BIN):
-	@mkdir -p $(BIN)
+TEST_EXECUTABLES = $(BUILD_DIR)/test_vector \
+                   $(BUILD_DIR)/test_linked_list \
+                   $(BUILD_DIR)/test_double_linked_list \
+                   $(BUILD_DIR)/test_stack \
+                   $(BUILD_DIR)/test_queue \
+                   $(BUILD_DIR)/test_deque
 
-$(BIN)/test_vector: test/test_vector.cpp | $(BIN)
-	$(CXX) $(CXXFLAGS) test/test_vector.cpp -o $@
+.PHONY: all clean test
 
-$(BIN)/test_linked_list: test/test_linked_list.cpp | $(BIN)
-	$(CXX) $(CXXFLAGS) test/test_linked_list.cpp -o $@
+all: $(BUILD_DIR) $(TEST_EXECUTABLES)
 
-$(BIN)/test_double_linked_list: test/test_double_linked_list.cpp | $(BIN)
-	$(CXX) $(CXXFLAGS) test/test_double_linked_list.cpp -o $@
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-$(BIN)/test_stack: test/test_stack.cpp | $(BIN)
-	$(CXX) $(CXXFLAGS) test/test_stack.cpp -o $@
+$(BUILD_DIR)/test_vector: $(TEST_DIR)/test_vector.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-$(BIN)/test_queue: test/test_queue.cpp | $(BIN)
-	$(CXX) $(CXXFLAGS) test/test_queue.cpp -o $@
+$(BUILD_DIR)/test_linked_list: $(TEST_DIR)/test_linked_list.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
 
-$(BIN)/test_deque: test/test_deque.cpp | $(BIN)
-	$(CXX) $(CXXFLAGS) test/test_deque.cpp -o $@
+$(BUILD_DIR)/test_double_linked_list: $(TEST_DIR)/test_double_linked_list.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+$(BUILD_DIR)/test_stack: $(TEST_DIR)/test_stack.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+$(BUILD_DIR)/test_queue: $(TEST_DIR)/test_queue.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+$(BUILD_DIR)/test_deque: $(TEST_DIR)/test_deque.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+test: all
+	@echo -e "$(CYAN)================================$(RESET)"
+	@echo -e "$(BOLD)$(BLUE)Running all tests...$(RESET)"
+	@echo -e "$(CYAN)================================$(RESET)"
+	@echo ""
+	@./$(BUILD_DIR)/test_deque || exit 1
+	@echo ""
+	@./$(BUILD_DIR)/test_double_linked_list || exit 1
+	@echo ""
+	@./$(BUILD_DIR)/test_linked_list || exit 1
+	@echo ""
+	@./$(BUILD_DIR)/test_queue || exit 1
+	@echo ""
+	@./$(BUILD_DIR)/test_stack || exit 1
+	@echo ""
+	@./$(BUILD_DIR)/test_vector || exit 1
+	@echo ""
+	@echo -e "$(GREEN)================================$(RESET)"
+	@echo -e "$(BOLD)$(GREEN)✓✓✓ ALL TESTS PASSED ✓✓✓$(RESET)"
+	@echo -e "$(GREEN)================================$(RESET)"
 
 clean:
-	rm -rf $(BIN)
-
-.PHONY: all clean
+	rm -rf $(BUILD_DIR)

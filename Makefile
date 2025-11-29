@@ -32,25 +32,25 @@ TEST_EXECUTABLES = $(BUILD_DIR)/test_vector \
 all: $(BUILD_DIR) $(TEST_EXECUTABLES)
 
 $(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)
 
 $(BUILD_DIR)/test_vector: $(TEST_DIR)/test_vector.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
+	@$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BUILD_DIR)/test_linked_list: $(TEST_DIR)/test_linked_list.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
+	@$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BUILD_DIR)/test_double_linked_list: $(TEST_DIR)/test_double_linked_list.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
+	@$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BUILD_DIR)/test_stack: $(TEST_DIR)/test_stack.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
+	@$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BUILD_DIR)/test_queue: $(TEST_DIR)/test_queue.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
+	@$(CXX) $(CXXFLAGS) $< -o $@
 
 $(BUILD_DIR)/test_deque: $(TEST_DIR)/test_deque.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
+	@$(CXX) $(CXXFLAGS) $< -o $@
 
 test: all
 	@echo -e "$(CYAN)================================$(RESET)"
@@ -74,4 +74,4 @@ test: all
 	@echo -e "$(GREEN)================================$(RESET)"
 
 clean:
-	rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)

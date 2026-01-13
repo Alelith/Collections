@@ -2,7 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 #include "test_colors.hpp"
-#include "queue.hpp"
+#include "super_lib.hpp"
 
 void test_queue_constructor() {
     TEST_GROUP("Queue constructors");

@@ -2,7 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 #include "test_colors.hpp"
-#include "deque.hpp"
+#include "super_lib.hpp"
 
 void test_deque_constructor() {
     TEST_GROUP("Deque constructors");

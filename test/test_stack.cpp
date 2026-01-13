@@ -2,7 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 #include "test_colors.hpp"
-#include "stack.hpp"
+#include "super_lib.hpp"
 
 void test_stack_constructor() {
     TEST_GROUP("Stack constructors");

@@ -2,7 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 #include "test_colors.hpp"
-#include "vector.hpp"
+#include "super_lib.hpp"
 
 void test_vector_constructor() {
     TEST_GROUP("Vector constructors");

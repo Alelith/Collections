@@ -2,7 +2,7 @@
 #include <cassert>
 #include <stdexcept>
 #include "test_colors.hpp"
-#include "double_linked_list.hpp"
+#include "super_lib.hpp"
 
 void test_double_linked_list_constructor() {
     TEST_GROUP("DoubleLinkedList constructors");

@@ -51,6 +51,6 @@ private:
 	size_type	size_;
 };
 
-#include "linked_list.tpp"
+#include "src/linked_list.tpp"
 
 #endif // LINKED_LIST_HPP

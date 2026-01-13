@@ -51,6 +51,6 @@ private:
 	void shrink_to_fit();
 };
 
-#include "vector.tpp"
+#include "src/vector.tpp"
 
 #endif // VECTOR_HPP

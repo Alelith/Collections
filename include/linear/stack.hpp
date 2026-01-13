@@ -50,6 +50,6 @@ private:
 	void shrink_to_fit();
 };
 
-#include "stack.tpp"
+#include "src/stack.tpp"
 
 #endif // STACK_HPP

@@ -1,7 +1,7 @@
 #ifndef LINKED_LIST_TPP
 #define LINKED_LIST_TPP
 
-#include "linked_list.hpp"
+#include "../linked_list.hpp"
 
 template<class T>
 LinkedList<T>::Node::Node(const T &value) : data(value), next(nullptr) {}

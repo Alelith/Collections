@@ -1,7 +1,7 @@
 #ifndef DEQUE_TPP
 #define DEQUE_TPP
 
-#include "deque.hpp"
+#include "../deque.hpp"
 
 template<class T>
 Deque<T>::Deque() : data_(nullptr), size_(0), capacity_(0), head_(0), tail_(0) {}

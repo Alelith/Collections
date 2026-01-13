@@ -1,7 +1,7 @@
 #ifndef QUEUE_TPP
 #define QUEUE_TPP
 
-#include "queue.hpp"
+#include "../queue.hpp"
 
 template<class T>
 Queue<T>::Node::Node(const T &value) : data(value), next(nullptr), prev(nullptr) {}

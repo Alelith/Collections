@@ -1,7 +1,7 @@
 #ifndef DOUBLE_LINKED_LIST_TPP
 #define DOUBLE_LINKED_LIST_TPP
 
-#include "double_linked_list.hpp"
+#include "../double_linked_list.hpp"
 
 template<class T>
 DoubleLinkedList<T>::Node::Node(const T &value) : data(value), next(nullptr), prev(nullptr) {}

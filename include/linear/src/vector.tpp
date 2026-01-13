@@ -1,7 +1,7 @@
 #ifndef VECTOR_TPP
 #define VECTOR_TPP
 
-#include "vector.hpp"
+#include "../vector.hpp"
 
 template<class T>
 Vector<T>::Vector() noexcept : data_(nullptr), size_(0), capacity_(0) {}

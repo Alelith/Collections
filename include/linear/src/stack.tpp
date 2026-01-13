@@ -1,7 +1,7 @@
 #ifndef STACK_TPP
 #define STACK_TPP
 
-#include "stack.hpp"
+#include "../stack.hpp"
 
 template<class T>
 Stack<T>::Stack() noexcept : data_(nullptr), size_(0), capacity_(0) {}

@@ -52,6 +52,6 @@ private:
 	size_type	size_;
 };
 
-#include "src/double_linked_list.tpp"
+#include "internal/double_linked_list.tpp"
 
 #endif // DOUBLE_LINKED_LIST_HPP

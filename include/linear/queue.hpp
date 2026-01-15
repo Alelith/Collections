@@ -51,6 +51,6 @@ private:
 	size_type	size_;
 };
 
-#include "src/queue.tpp"
+#include "internal/queue.tpp"
 
 #endif // QUEUE_HPP

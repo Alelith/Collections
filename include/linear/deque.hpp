@@ -52,6 +52,6 @@ private:
 	void order();
 };
 
-#include "src/deque.tpp"
+#include "internal/deque.tpp"
 
 #endif // DEQUE_HPP

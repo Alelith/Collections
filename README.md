@@ -1,9 +1,9 @@
 # 🚀 Collections Library
 
-![Status](https://img.shields.io/badge/status-Completed-blue)
+![Status](https://img.shields.io/badge/status-In%20development-blue)
 ![Language](https://img.shields.io/badge/language-C%2B%2B17-orange)
 ![Build System](https://img.shields.io/badge/build-Make-yellow)
-![License](https://img.shields.io/badge/license-No%20License-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-green)
 ![Last update](https://img.shields.io/github/last-commit/Alelith/Collections)
 
 ---

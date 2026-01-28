@@ -14,18 +14,25 @@ RESET = \033[0m
 
 # Test files explicitly listed
 TEST_SOURCES = $(TEST_DIR)/test_vector.cpp \
-               $(TEST_DIR)/test_linked_list.cpp \
-               $(TEST_DIR)/test_double_linked_list.cpp \
-               $(TEST_DIR)/test_stack.cpp \
-               $(TEST_DIR)/test_queue.cpp \
-               $(TEST_DIR)/test_deque.cpp
+			   $(TEST_DIR)/test_linked_list.cpp \
+			   $(TEST_DIR)/test_double_linked_list.cpp \
+			   $(TEST_DIR)/test_stack.cpp \
+			   $(TEST_DIR)/test_queue.cpp \
+			   $(TEST_DIR)/test_deque.cpp \
+			   $(TEST_DIR)/test_check.cpp \
+			   $(TEST_DIR)/test_conversion.cpp
+
+# Source files for standard functions
+STD_FUNC_SOURCES = src/check.cpp src/conversion.cpp
 
 TEST_EXECUTABLES = $(BUILD_DIR)/test_vector \
-                   $(BUILD_DIR)/test_linked_list \
-                   $(BUILD_DIR)/test_double_linked_list \
-                   $(BUILD_DIR)/test_stack \
-                   $(BUILD_DIR)/test_queue \
-                   $(BUILD_DIR)/test_deque
+				   $(BUILD_DIR)/test_linked_list \
+				   $(BUILD_DIR)/test_double_linked_list \
+				   $(BUILD_DIR)/test_stack \
+				   $(BUILD_DIR)/test_queue \
+				   $(BUILD_DIR)/test_deque \
+				   $(BUILD_DIR)/test_check \
+				   $(BUILD_DIR)/test_conversion
 
 .PHONY: all clean test
 
@@ -52,10 +59,20 @@ $(BUILD_DIR)/test_queue: $(TEST_DIR)/test_queue.cpp
 $(BUILD_DIR)/test_deque: $(TEST_DIR)/test_deque.cpp
 	@$(CXX) $(CXXFLAGS) $< -o $@
 
+$(BUILD_DIR)/test_check: $(TEST_DIR)/test_check.cpp $(STD_FUNC_SOURCES)
+	@$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(BUILD_DIR)/test_conversion: $(TEST_DIR)/test_conversion.cpp $(STD_FUNC_SOURCES)
+	@$(CXX) $(CXXFLAGS) $^ -o $@
+
 test: all
 	@echo -e "$(CYAN)================================$(RESET)"
 	@echo -e "$(BOLD)$(BLUE)Running all tests...$(RESET)"
 	@echo -e "$(CYAN)================================$(RESET)"
+	@echo ""
+	@./$(BUILD_DIR)/test_check || exit 1
+	@echo ""
+	@./$(BUILD_DIR)/test_conversion || exit 1
 	@echo ""
 	@./$(BUILD_DIR)/test_deque || exit 1
 	@echo ""

@@ -2,6 +2,9 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -I./include
 TEST_DIR = test
 BUILD_DIR = build
+SRC_DIR = src
+LIB_DIR = $(BUILD_DIR)/lib
+LIB_NAME = libcollections.a
 
 # Colors
 GREEN = \033[0;32m
@@ -23,7 +26,9 @@ TEST_SOURCES = $(TEST_DIR)/test_vector.cpp \
 			   $(TEST_DIR)/test_conversion.cpp
 
 # Source files for standard functions
-STD_FUNC_SOURCES = src/check.cpp src/conversion.cpp
+SRC_SOURCES = $(SRC_DIR)/check.cpp $(SRC_DIR)/conversion.cpp
+SRC_OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(BUILD_DIR)/obj/%.o,$(SRC_SOURCES))
+LIBRARY = $(LIB_DIR)/$(LIB_NAME)
 
 TEST_EXECUTABLES = $(BUILD_DIR)/test_vector \
 				   $(BUILD_DIR)/test_linked_list \
@@ -34,12 +39,27 @@ TEST_EXECUTABLES = $(BUILD_DIR)/test_vector \
 				   $(BUILD_DIR)/test_check \
 				   $(BUILD_DIR)/test_conversion
 
-.PHONY: all clean test
+.PHONY: all clean test library
 
-all: $(BUILD_DIR) $(TEST_EXECUTABLES)
+all: $(BUILD_DIR) $(LIBRARY) $(TEST_EXECUTABLES)
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/obj
+	@mkdir -p $(LIB_DIR)
+
+# Compile object files
+$(BUILD_DIR)/obj/%.o: $(SRC_DIR)/%.cpp
+	@echo -e "$(CYAN)Compiling $<...$(RESET)"
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Create static library
+$(LIBRARY): $(SRC_OBJECTS)
+	@echo -e "$(YELLOW)Creating static library $(LIB_NAME)...$(RESET)"
+	@ar rcs $@ $^
+	@echo -e "$(GREEN)✓ Library created successfully$(RESET)"
+
+library: $(BUILD_DIR) $(LIBRARY)
 
 $(BUILD_DIR)/test_vector: $(TEST_DIR)/test_vector.cpp
 	@$(CXX) $(CXXFLAGS) $< -o $@
@@ -59,11 +79,11 @@ $(BUILD_DIR)/test_queue: $(TEST_DIR)/test_queue.cpp
 $(BUILD_DIR)/test_deque: $(TEST_DIR)/test_deque.cpp
 	@$(CXX) $(CXXFLAGS) $< -o $@
 
-$(BUILD_DIR)/test_check: $(TEST_DIR)/test_check.cpp $(STD_FUNC_SOURCES)
-	@$(CXX) $(CXXFLAGS) $^ -o $@
+$(BUILD_DIR)/test_check: $(TEST_DIR)/test_check.cpp $(LIBRARY)
+	@$(CXX) $(CXXFLAGS) $< -L$(LIB_DIR) -lcollections -o $@
 
-$(BUILD_DIR)/test_conversion: $(TEST_DIR)/test_conversion.cpp $(STD_FUNC_SOURCES)
-	@$(CXX) $(CXXFLAGS) $^ -o $@
+$(BUILD_DIR)/test_conversion: $(TEST_DIR)/test_conversion.cpp $(LIBRARY)
+	@$(CXX) $(CXXFLAGS) $< -L$(LIB_DIR) -lcollections -o $@
 
 test: all
 	@echo -e "$(CYAN)================================$(RESET)"

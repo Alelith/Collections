@@ -142,12 +142,76 @@ Before you begin, ensure you have the following installed:
 
 ### Steps
 
+#### 1. Clone the repository
+
 ``` bash
 git clone https://github.com/Alelith/Collections.git
 cd Collections
 ```
 
-No additional dependencies are required. The library is header-only (except for utility functions which have `.cpp` implementations).
+#### 2. Build the static library
+
+``` bash
+make library
+```
+
+This will compile the utility functions from `src/` and create the static library `libcollections.a` in `build/lib/`.
+
+#### 3. Using the library in your project
+
+To use this library in your own C++ project:
+
+**A. Copy the necessary files:**
+
+``` bash
+# Copy the entire include directory to your project
+cp -r /path/to/Collections/include /path/to/your/project/
+
+# Copy the compiled static library
+cp /path/to/Collections/build/lib/libcollections.a /path/to/your/project/lib/
+```
+
+**B. Compile your project with the library:**
+
+``` bash
+# Basic compilation command
+g++ -std=c++17 -I./include your_code.cpp -L./lib -lcollections -o your_program
+```
+
+**Example project structure:**
+```
+your_project/
+├── include/           # Copied from Collections
+│   ├── super_lib.hpp
+│   ├── linear/
+│   ├── tree/
+│   └── standard_functions/
+├── lib/
+│   └── libcollections.a  # Copied from build/lib/
+├── your_code.cpp
+└── Makefile (optional)
+```
+
+**Example Makefile for your project:**
+
+``` makefile
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra -I./include
+LDFLAGS = -L./lib -lcollections
+
+TARGET = your_program
+SOURCES = your_code.cpp
+
+all: $(TARGET)
+
+$(TARGET): $(SOURCES)
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+
+clean:
+	rm -f $(TARGET)
+```
+
+**Note:** Most of the library is header-only (template implementations). The static library `libcollections.a` contains only the compiled utility functions (`check.cpp` and `conversion.cpp`). For template-based containers (Vector, LinkedList, etc.), no linking is required—simply include the headers.
 
 ---
 
@@ -473,9 +537,9 @@ Please make sure to:
 
 ## 📜 License
 
-This project does not currently have a specified license. All rights reserved by the author.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-For usage permissions, please contact the author directly.
+The MIT License allows you to freely use, modify, and distribute this software, provided that the original copyright notice and license terms are included in all copies or substantial portions of the software.
 
 ---
 

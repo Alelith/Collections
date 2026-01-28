@@ -106,6 +106,6 @@ private:
 	size_type	size_;  ///< Number of elements in list
 };
 
-#include "src/linked_list.tpp"
+#include "internal/linked_list.tpp"
 
 #endif

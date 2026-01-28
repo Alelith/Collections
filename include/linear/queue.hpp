@@ -107,6 +107,6 @@ private:
 	size_type	size_;  ///< Number of elements in queue
 };
 
-#include "src/queue.tpp"
+#include "internal/queue.tpp"
 
 #endif

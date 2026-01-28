@@ -73,6 +73,6 @@ private:
 	void shrink_to_fit();
 };
 
-#include "src/stack.tpp"
+#include "internal/stack.tpp"
 
 #endif

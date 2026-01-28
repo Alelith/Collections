@@ -109,6 +109,6 @@ private:
 	size_type	size_;  ///< Number of elements in list
 };
 
-#include "src/double_linked_list.tpp"
+#include "internal/double_linked_list.tpp"
 
 #endif

@@ -99,6 +99,6 @@ private:
 	void shrink_to_fit();
 };
 
-#include "src/vector.tpp"
+#include "internal/vector.tpp"
 
 #endif
